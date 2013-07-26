@@ -1,56 +1,32 @@
 <html>
   <head>
     <title>play something</title>
-    <link href="phoneplay.css" rel="stylesheet" type="text/css" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link href="style.css" rel="stylesheet" type="text/css" />
 
-<script>
-  function fetchstate()
-  {
-    document.getElementById("stateinfo").innerHTML=("tits");
-    if (window.XMLHttpRequest)
-    { // IE7+, Firefox, Chrome, Opera, Safari
-      xmlhttp=new XMLHttpRequest();
-    }
-    else
-    { // IE6, IE5
-      xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xmlhttp.onreadystatechange=function()
-    {
-      if (xmlhttp.readyState==4 && xmlhttp.status==200)
-      {
-        document.getElementById("stateinfo").innerHTML=xmlhttp.responseText;
-      }
-    }
-    xmlhttp.open("GET","fetchstate.php",true);
-    xmlhttp.send();
-  }
-
-  // if a bunch of people view the page at once, multiple people are calling this every 4 seconds
-  // this can cause fetchstate.sh to be run in parallel, and output info isn't parsed correctly
-  // will need more sophisticated fetchstate function to:
-  //      only fetch needed info (when a thing is playing, don't need to keep fetching its name until a new thing plays)
-  //      parse the entire output of commands sent to mplayer instead of just stripping them, so right information always gets displayed
-  //      ideal behavior would be daemon like: fetchstate.sh is only run once and continually feeds info to the page, but isn't called by everyone viewing the page. i don't know how to do this yet
-
-  window.setInterval(function()
-  {
-    fetchstate();
-  }, 4000);
-</script>
   </head>
 
 <body>
   <div id="header">
-    <a href="?">home</a>
-    <a href="?cmd=stop">stop</a>
-    <a href="?cmd=pause">toggle</a>
+    <a href="?cmd=tvon">on</a> |
+    <a href="?cmd=tvoff">off</a> |
+    <a href="?cmd=reset">reset</a><br />
+    <a href="?">home</a> |
+    <a href="?cmd=stop">stop</a> |
+    <a href="?cmd=pause">toggle</a><br />
+
+    <a href="?cmd=smallforward">+10</a> |
+    <a href="?cmd=smallback">-10</a> |
+    <a href="?cmd=mediumforward">+60</a> |
+    <a href="?cmd=mediumback">-60</a> |
+    <a href="?cmd=bigforward">+600</a> |
+    <a href="?cmd=bigback">-600</a><br />
+
+
     Volume: <a href="?cmd=volumeup">up</a> / <a href="?cmd=volumedown">down</a>
-    <hr />
   </div>
 
-  <div id="content"> <br />
-<p><span id="stateinfo"></span></p>
+  <div id="content">
 
 <br /><hr /><br />
     <?php
@@ -65,8 +41,6 @@
       //       hide files that aren't mp3s or videos
       //       css so it's less ugly
       //       support entering youtube urls into some textbox
-      //       if mplayer isn't running with playserver settings, say so
-      //         should you still be able to edit the playlist if playserver isn't running?
       $path = $_GET['path'];
       $cmd = $_GET['cmd'];
       function send_mplayer_cmd($str)
@@ -78,45 +52,60 @@
         fclose($f);
 
         if ($o === FALSE)
-        {
           die("unable to write to the pipe");
-        }
 
         return $o;
       }
+      if ($cmd) {
+        switch ($cmd)
+        {
+          case 'tvon':
+            shell_exec('/usr/bin/device.sh hdmi');
+            shell_exec('DISPLAY=:0.0 mplayer -slave -idle -nocache -input file=/home/everyone/mplayerfifo>/dev/null &');
+            shell_exec('DISPLAY=:0.0 hdmi.sh on');
+            break;
 
-      if ($cmd == 'volumeup')
-      {
-        send_mplayer_cmd("volume +1");
-      }
+          case 'tvoff':
+            shell_exec('killall mplayer');
+            shell_exec('DISPLAY=:0.0 hdmi.sh off');
+            shell_exec('/usr/bin/device.sh xfi');
+            break;
 
-      if ($cmd == 'volumedown')
-      {
-        send_mplayer_cmd("volume -1");
-      }
+          case 'reset':
+            shell_exec('killall mplayer');
+            shell_exec('rm /home/everyone/mplayerfifo');
+            shell_exec('mkfifo /home/everyone/mplayerfifo');
+            shell_exec('DISPLAY=:0.0 mplayer -slave -idle -nocache -input file=/home/everyone/mplayerfifo>/dev/null &');
+            break;
 
-      if ($cmd == 'stop')
-      {
-        send_mplayer_cmd("stop");
-      }
+          case 'smallback':     send_mplayer_cmd("seek -10 0"); break;
 
-      if ($cmd == 'pause')
-      {
-        send_mplayer_cmd("pause");
-      }
+          case 'mediumback':    send_mplayer_cmd("seek -60 0"); break;
 
-      if ($cmd == 'play')
-      {
-        send_mplayer_cmd("pause");
+          case 'bigback':       send_mplayer_cmd("seek -600 0"); break;
+
+          case 'smallforward':  send_mplayer_cmd("seek +10 0"); break;
+
+          case 'mediumforward': send_mplayer_cmd("seek +60 0"); break;
+
+          case 'bigforward':    send_mplayer_cmd("seek +600 0"); break;
+
+          case 'volumeup':      send_mplayer_cmd("volume +5"); break;
+
+          case 'volumedown':    send_mplayer_cmd("volume -5"); break;
+
+          case 'stop':          send_mplayer_cmd("stop"); break;
+
+          case 'pause':         send_mplayer_cmd("pause"); break;
+
+          case 'play':          send_mplayer_cmd("pause"); break;
+        }
       }
 
       # cmd empty, start a video
       if (is_file($path))
       {
-        # turn screen on
-        system('DISPLAY=:0 /usr/bin/sudo -E -u ren /usr/bin/xset dpms force on');
         send_mplayer_cmd("loadfile \"$path\"");
-        //print("<a class=\"pause\" href=\"?path=".urlencode($path)."&cmd=pause\">pause</a>\n");
       }
 
       # default directory
