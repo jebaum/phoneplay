@@ -10,6 +10,7 @@
   <div id="header">
     <a href="?cmd=tvon">on</a> |
     <a href="?cmd=tvoff">off</a> |
+    <a href="?cmd=move">move</a> |
     <a href="?cmd=reset">reset</a><br />
     <a href="?">home</a> |
     <a href="?cmd=stop">stop</a> |
@@ -41,6 +42,7 @@
       //       hide files that aren't mp3s or videos
       //       css so it's less ugly
       //       support entering youtube urls into some textbox
+      //       bash script loop to check return of i3-msg focus for mplayer, and move to 13: tv once we have focus
       $path = $_GET['path'];
       $cmd = $_GET['cmd'];
       function send_mplayer_cmd($str)
@@ -60,14 +62,13 @@
         switch ($cmd)
         {
           case 'tvon':
-            shell_exec('/usr/bin/device.sh hdmi');
-            shell_exec('DISPLAY=:0.0 mplayer -slave -idle -nocache -input file=/home/everyone/mplayerfifo>/dev/null &');
             shell_exec('DISPLAY=:0.0 hdmi.sh on');
+            shell_exec('DISPLAY=:0.0 mplayer --profile=hdmi >/home/everyone/log &');
             break;
 
           case 'tvoff':
-            shell_exec('killall mplayer');
             shell_exec('DISPLAY=:0.0 hdmi.sh off');
+            shell_exec('killall mplayer');
             shell_exec('/usr/bin/device.sh xfi');
             break;
 
@@ -75,7 +76,12 @@
             shell_exec('killall mplayer');
             shell_exec('rm /home/everyone/mplayerfifo');
             shell_exec('mkfifo /home/everyone/mplayerfifo');
-            shell_exec('DISPLAY=:0.0 mplayer -slave -idle -nocache -input file=/home/everyone/mplayerfifo>/dev/null &');
+            shell_exec('DISPLAY=:0.0 mplayer --profile=hdmi >/home/everyone/log &');
+            break;
+
+          case 'move':
+            shell_exec('DISPLAY=:0.0 i3-msg \[class="mplayer2"\] focus');
+            shell_exec('DISPLAY=:0.0 i3-msg move workspace number 13: tv');
             break;
 
           case 'smallback':     send_mplayer_cmd("seek -10 0"); break;
@@ -90,9 +96,9 @@
 
           case 'bigforward':    send_mplayer_cmd("seek +600 0"); break;
 
-          case 'volumeup':      send_mplayer_cmd("volume +5"); break;
+          case 'volumeup':      send_mplayer_cmd("volume +10"); break;
 
-          case 'volumedown':    send_mplayer_cmd("volume -5"); break;
+          case 'volumedown':    send_mplayer_cmd("volume -10"); break;
 
           case 'stop':          send_mplayer_cmd("stop"); break;
 
@@ -121,7 +127,6 @@
         closedir($handle);
         print("</ul>\n");
       }
-      fetchState();
       exit(1);
     ?>
   </div>
