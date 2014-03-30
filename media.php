@@ -47,7 +47,7 @@
       $cmd = $_GET['cmd'];
       function send_mplayer_cmd($str)
       {
-        $fifo = '/home/everyone/mplayerfifo';
+        $fifo = '/home/everyone/mpvfifo';
         $f = fopen($fifo, "w");
         if (!$f) die ("unable to open pipe");
         $o = fwrite($f, $str."\n");
@@ -63,24 +63,24 @@
         {
           case 'tvon':
             shell_exec('DISPLAY=:0.0 hdmi.sh on');
-            shell_exec('DISPLAY=:0.0 mplayer --profile=hdmi >/home/everyone/log &');
+            shell_exec('DISPLAY=:0.0 mpv --profile=hdmi >/home/everyone/log &');
             break;
 
           case 'tvoff':
             shell_exec('DISPLAY=:0.0 hdmi.sh off');
-            shell_exec('killall mplayer');
+            shell_exec('killall mpv');
             shell_exec('/usr/bin/device.sh xfi');
             break;
 
           case 'reset':
-            shell_exec('killall mplayer');
-            shell_exec('rm /home/everyone/mplayerfifo');
-            shell_exec('mkfifo /home/everyone/mplayerfifo');
-            shell_exec('DISPLAY=:0.0 mplayer --profile=hdmi >/home/everyone/log &');
+            shell_exec('killall mpv');
+            shell_exec('rm /home/everyone/mpvfifo');
+            shell_exec('mkfifo /home/everyone/mpvfifo');
+            shell_exec('DISPLAY=:0.0 mpv --profile=hdmi >/home/everyone/log &');
             break;
 
           case 'move':
-            shell_exec('DISPLAY=:0.0 i3-msg \[class="mplayer2"\] focus');
+            shell_exec('DISPLAY=:0.0 i3-msg \[class="mpv"\] focus');
             shell_exec('DISPLAY=:0.0 i3-msg move workspace number 13: tv');
             break;
 
