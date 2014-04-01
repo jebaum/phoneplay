@@ -1,9 +1,33 @@
-body
-{
-  background-color:#121212;
-  color:white;
-  /*font-size:34pt;*/
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: sans-serif;
+    background: #121212;
 }
 
 a:link    { color: #FF0000; }
-a:visited { color: #F05050; }
+a:visited { color: #F05050 }
+
+a.entry {
+	display: block;
+	text-decoration: none;
+	color: #A0A0A0;
+	background: #f1f1f1;
+	background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5));
+	background: -webkit-linear-gradient(top, #ffffff 0%,#e5e5e5 100%);
+	background: -o-linear-gradient(top, #ffffff 0%,#e5e5e5 100%);
+	background: -ms-linear-gradient(top, #ffffff 0%,#e5e5e5 100%);
+	background: linear-gradient(to bottom, #050505 0%,#070707 100%);
+	border-bottom: 1px #000000 solid;
+	padding: 1em;
+	text-align: center;
+}
+
+a.entry:hover {
+    color: #00DDDD;
+    background: linear-gradient(to bottom, #090909 0%,#0D0D0D 100%);
+}
