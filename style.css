@@ -32,10 +32,23 @@ a.entry:hover {
     background: linear-gradient(to bottom, #090909 0%,#0D0D0D 100%);
 }
 
-
-#header {
+#header, #viewmanagement {
+    background-color:#121212;
+    width:100%;
     text-align: center;
+    position:fixed;
+    z-index:4;
 }
+
+#header { margin-top:40px; }
+
+#content {
+    margin-top:210px;
+    width:100%;
+    position: absolute;
+    z-index:1;
+}
+
 
 .button, button, input[type="submit"], input[type="reset"], input[type="button"] {
     background: #111111; /* Old browsers */

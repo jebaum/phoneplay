@@ -17,27 +17,42 @@
   </head>
 
 <body>
-  <center>
-    <input type='button' id='showhide' value='show/hide header' onclick="toggle('header');">
-    <input type='button' id='showhide' value='show/hide content' onclick="toggle('content');">
-  </center>
+  <div id="viewmanagement">
+    <input type='button' id='showhide' value='show/hide controls' onclick="toggle('header');">
+    <input type='button' id='showhide' value='show/hide browsing' onclick="toggle('content');">
+  </div>
 
-  <div id="header">
-    <a href="?cmd=tvon" class="button">on</a>
-    <a href="?cmd=tvoff" class="button">off</a>
-    <a href="?cmd=move" class="button">move</a>
-    <a href="?cmd=reset" class="button">reset</a><br />
-    <a href="?" class="button">home</a>
-    <a href="?cmd=stop" class="button">stop</a>
-    <a href="?cmd=pause" class="button">play/pause</a><br />
+<?php
+    $hideheader = $_GET['hideheader'];
+    if (!$hideheader)
+      print("<div id='header'>");
+    else
+      print("<div id='header' style='display:none;'>");
+?>
+<?php
+  $linkpath = $_GET['path'];
+  if (is_file($linkpath)) {
+    $linkpath = dirname($linkpath);
+  }
 
-    <a href="?cmd=smallforward" class="button">+10</a>
-    <a href="?cmd=smallback" class="button">-10</a>
-    <a href="?cmd=mediumforward" class="button">+60</a>
-    <a href="?cmd=mediumback" class="button">-60</a>
-    <a href="?cmd=bigforward" class="button">+600</a>
-    <a href="?cmd=bigback" class="button">-600</a><br />
+  $linkpath = urlencode($linkpath);
 
+  print("<a href='?cmd=tvon&path=".$linkpath."' class='button'>on</a>\n");
+  print("<a href='?cmd=tvoff&path=".$linkpath."' class='button'>off</a>\n");
+  print("<a href='?cmd=move&path=".$linkpath."' class='button'>move</a>\n");
+  print("<a href='?cmd=reset&path=".$linkpath."' class='button'>reset</a><br />\n");
+  print("<a href='?' class='button'>home</a>\n");
+  print("<a href='?cmd=stop&path=".$linkpath."' class='button'>stop</a>\n");
+  print("<a href='?cmd=pause&path=".$linkpath."' class='button'>play/pause</a><br />\n");
+
+  print("<a href='?cmd=smallforward&path=".$linkpath."' class='button'>+10</a>\n");
+  print("<a href='?cmd=smallback&path=".$linkpath."' class='button'>-10</a>\n");
+  print("<a href='?cmd=mediumforward&path=".$linkpath."' class='button'>+60</a>\n");
+  print("<a href='?cmd=mediumback&path=".$linkpath."' class='button'>-60</a>\n");
+  print("<a href='?cmd=bigforward&path=".$linkpath."' class='button'>+600</a>\n");
+  print("<a href='?cmd=bigback&path=".$linkpath."' class='button'>-600</a><br />\n");
+
+?>
     Volume: <a href="?cmd=volumeup" class="button">up</a>
             <a href="?cmd=volumedown" class="button">down</a><br />
 
@@ -46,20 +61,17 @@
 
   <div id="content">
 
-<br /><hr /><br />
+<br /><br />
     <?php
-      // TODO: functions for other commands (volume, seeking, etc)
-      //       frames or some kind of mechanism so directory remains persistent
+      // TODO:
       //       show current state (played/paused/stopped, current file, progress) and volume somewhere
       //       playlist file that gets displayed somewhere, can be added to or removed from
       //         mpv iterates down this list
       //         click on item in the list to skip to that point in the list
       //       "add all in directory" function
-      //       hide files that aren't mp3s or videos
       //       support entering youtube urls into some textbox
       //       bash script loop to check return of i3-msg focus for mpv, and move to 13: tv once we have focus
       //       slightly different colors for files and directories, and maybe move the 'back' link?
-      //       make controls into more easily clickable buttons
       $path = $_GET['path'];
       $cmd = $_GET['cmd'];
       function send_mpv_cmd($str)
@@ -154,8 +166,6 @@
       sort($files, SORT_FLAG_CASE | SORT_STRING);
       print("<ul>\n");
       foreach($directories as $directory) {
-          if ($directory == '..')
-              $directory = 'back....';
           if ($directory != 'zmisc')
             print("<li><a class=\"entry\" href=\"?path=".urlencode(realpath("$path/$directory"))."\">$directory</a></li>\n");
       }
