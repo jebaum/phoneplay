@@ -9,7 +9,6 @@
 
   <div id="content">
 
-<br /><br />
     <?php
       // TODO:
       //       show current state (played/paused/stopped, current file, progress) and volume somewhere

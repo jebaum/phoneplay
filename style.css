@@ -3,11 +3,15 @@
 	padding: 0;
 }
 
-body {
+html, body {
 	font-family: sans-serif;
     background: #121212;
     color: #C0C0C0;
+    border:0px;
+    margin:0px;
+    padding:0px;
 }
+
 
 a:link,a:visited { color: #FFFFFF; }
 
@@ -32,7 +36,11 @@ a.entry:hover {
     background: linear-gradient(to bottom, #090909 0%,#0D0D0D 100%);
 }
 
-#header, #viewmanagement {
+#browseframe {
+    overflow-y:hidden;
+}
+
+#header, #hideshow {
     background-color:#000000;
     width:100%;
     text-align: center;
@@ -40,13 +48,8 @@ a.entry:hover {
     z-index:4;
 }
 
-#header { margin-top:20px; z-index:3; }
-
 #content {
-    margin-top:78px;
     width:100%;
-    position:absolute;
-    z-index:1;
 }
 
 

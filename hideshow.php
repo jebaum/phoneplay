@@ -6,17 +6,19 @@
     <script type="text/javascript">
         function hideControls()
         {
-            parent.document.getElementById("header").style.display='none';
+            parent.document.getElementById("controlsframe").style.display='none';
+            parent.document.getElementById("browseframe").height='90%';
         }
         function showControls()
         {
-            parent.document.getElementById("header").style.display='block';
+            parent.document.getElementById("controlsframe").style.display='block';
+            parent.document.getElementById("browseframe").height='65%';
         }
     </script>
   </head>
 
 <body>
-  <div id="viewmanagement">
+  <div id="hideshow">
     <input type='button' id='showhide' value='hide controls' onclick="hideControls();">
     <input type='button' id='showhide' value='show controls' onclick="showControls();">
   </div>
