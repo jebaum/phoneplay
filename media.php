@@ -3,28 +3,45 @@
     <title>play something</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link href="style.css" rel="stylesheet" type="text/css" />
-
+    <script type="text/javascript">
+      var toggle = function(elementid) {
+        var div = document.getElementById(elementid);
+        if (div.style.display !== 'none') {
+          div.style.display = 'none';
+        }
+        else {
+          div.style.display = 'block';
+        }
+      };
+    </script>
   </head>
 
 <body>
+  <center>
+    <input type='button' id='showhide' value='show/hide header' onclick="toggle('header');">
+    <input type='button' id='showhide' value='show/hide content' onclick="toggle('content');">
+  </center>
+
   <div id="header">
-    <a href="?cmd=tvon">on</a> |
-    <a href="?cmd=tvoff">off</a> |
-    <a href="?cmd=move">move</a> |
-    <a href="?cmd=reset">reset</a><br />
-    <a href="?">home</a> |
-    <a href="?cmd=stop">stop</a> |
-    <a href="?cmd=pause">play/pause</a><br />
+    <a href="?cmd=tvon" class="button">on</a>
+    <a href="?cmd=tvoff" class="button">off</a>
+    <a href="?cmd=move" class="button">move</a>
+    <a href="?cmd=reset" class="button">reset</a><br />
+    <a href="?" class="button">home</a>
+    <a href="?cmd=stop" class="button">stop</a>
+    <a href="?cmd=pause" class="button">play/pause</a><br />
 
-    <a href="?cmd=smallforward">+10</a> |
-    <a href="?cmd=smallback">-10</a> |
-    <a href="?cmd=mediumforward">+60</a> |
-    <a href="?cmd=mediumback">-60</a> |
-    <a href="?cmd=bigforward">+600</a> |
-    <a href="?cmd=bigback">-600</a><br />
+    <a href="?cmd=smallforward" class="button">+10</a>
+    <a href="?cmd=smallback" class="button">-10</a>
+    <a href="?cmd=mediumforward" class="button">+60</a>
+    <a href="?cmd=mediumback" class="button">-60</a>
+    <a href="?cmd=bigforward" class="button">+600</a>
+    <a href="?cmd=bigback" class="button">-600</a><br />
 
+    Volume: <a href="?cmd=volumeup" class="button">up</a>
+            <a href="?cmd=volumedown" class="button">down</a><br />
 
-    Volume: <a href="?cmd=volumeup">up</a> / <a href="?cmd=volumedown">down</a>
+<!--<a class="button" style="padding: 3px 5px 3px 5px;"><img src="play_small.png" /></a><br />-->
   </div>
 
   <div id="content">
@@ -41,6 +58,8 @@
       //       hide files that aren't mp3s or videos
       //       support entering youtube urls into some textbox
       //       bash script loop to check return of i3-msg focus for mpv, and move to 13: tv once we have focus
+      //       slightly different colors for files and directories, and maybe move the 'back' link?
+      //       make controls into more easily clickable buttons
       $path = $_GET['path'];
       $cmd = $_GET['cmd'];
       function send_mpv_cmd($str)
@@ -104,26 +123,53 @@
         shell_exec('DISPLAY=:0.0 i3-msg workspace number 13: tv');
         shell_exec("DISPLAY=:0.0 ./play.sh \"$path\"");
         send_mpv_cmd("loadfile \"$path\"");
+        $path = dirname($path);
       }
 
       # default directory
       if (!is_dir($path))
         $path = '/home/everyone/';
 
-      if ($handle = opendir($path))
+      $directories = array();
+      $files       = array();
+
+      $dir_contents = scandir($path);
+      foreach($dir_contents as $file)
       {
-        print("<ul>\n");
-        while (false !== ($entry = readdir($handle))) {
-            if ($entry != ".") {
-                print("<li><a class=\"entry\" href=\"?path=".urlencode(realpath("$path/$entry"))."\">$entry</a></li>\n");
-            }
-        }
-        closedir($handle);
-        print("</ul>\n");
+          if ($file != '.')
+          {
+              if(is_dir($path.'/'.$file))
+              {
+                  $directories[] = $file;
+              }
+              else
+              {
+                  $files[] = $file;
+              }
+          }
       }
-      exit(1);
+
+      // sort case insensitively
+      sort($directories, SORT_FLAG_CASE | SORT_STRING);
+      sort($files, SORT_FLAG_CASE | SORT_STRING);
+      print("<ul>\n");
+      foreach($directories as $directory) {
+          if ($directory == '..')
+              $directory = 'back....';
+          if ($directory != 'zmisc')
+            print("<li><a class=\"entry\" href=\"?path=".urlencode(realpath("$path/$directory"))."\">$directory</a></li>\n");
+      }
+
+      foreach($files as $file) {
+          if ($file != 'fetchstate.sh' && $file != 'mpvfifo')
+            print("<li><a class=\"entry\" href=\"?path=".urlencode(realpath("$path/$file"))."\">$file</a></li>\n");
+      }
+      print("</ul>\n");
+
     ?>
   </div>
 
 </body>
 </html>
+
+<!-- vim: shiftwidth=2 softtabstop=2 tabstop=2
