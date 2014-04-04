@@ -3,32 +3,8 @@
     <title>play something</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link href="style.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript">
-      var toggle = function(elementid) {
-        var div = document.getElementById(elementid);
-        if (div.style.display !== 'none') {
-          div.style.display = 'none';
-        }
-        else {
-          div.style.display = 'block';
-        }
-      };
-    </script>
-  </head>
-
 <body>
-  <div id="viewmanagement">
-    <input type='button' id='showhide' value='show/hide controls' onclick="toggle('header');">
-    <input type='button' id='showhide' value='show/hide browsing' onclick="toggle('content');">
-  </div>
-
-<?php
-    $hideheader = $_GET['hideheader'];
-    if (!$hideheader)
-      print("<div id='header'>");
-    else
-      print("<div id='header' style='display:none;'>");
-?>
+  <div id="header">
 <?php
   $linkpath = $_GET['path'];
   if (is_file($linkpath)) {
@@ -43,7 +19,7 @@
   print("<a href='?cmd=reset&path=".$linkpath."' class='button'>reset</a>\n");
   print("<br />\n");
 
-  print("<a href='?' class='button'>home</a>\n");
+  print("<a href='browse.php' target='browse' class='button'>home</a>\n");
   print("<a href='?cmd=stop&path=".$linkpath."' class='button'>stop</a>\n");
   print("<a href='?cmd=pause&path=".$linkpath."' class='button'>play/pause</a>\n");
   print("<a href='?cmd=volumeup&path=".$linkpath."' class='button'>vol up</a>\n");
@@ -62,9 +38,6 @@
 <!--<a class="button" style="padding: 3px 5px 3px 5px;"><img src="play_small.png" /></a><br />-->
   </div>
 
-  <div id="content">
-
-<br /><br />
     <?php
       // TODO:
       //       show current state (played/paused/stopped, current file, progress) and volume somewhere
@@ -131,57 +104,7 @@
         }
       }
 
-      # cmd empty, start a video
-      if (is_file($path))
-      {
-        shell_exec('killall mpv');
-        shell_exec('DISPLAY=:0.0 i3-msg workspace number 13: tv');
-        shell_exec("DISPLAY=:0.0 ./play.sh \"$path\"");
-        send_mpv_cmd("loadfile \"$path\"");
-        $path = dirname($path);
-      }
-
-      # default directory
-      if (!is_dir($path))
-        $path = '/home/everyone/';
-
-      $directories = array();
-      $files       = array();
-
-      $dir_contents = scandir($path);
-      foreach($dir_contents as $file)
-      {
-          if ($file != '.')
-          {
-              if(is_dir($path.'/'.$file))
-              {
-                  $directories[] = $file;
-              }
-              else
-              {
-                  $files[] = $file;
-              }
-          }
-      }
-
-      // sort case insensitively
-      sort($directories, SORT_FLAG_CASE | SORT_STRING);
-      sort($files, SORT_FLAG_CASE | SORT_STRING);
-      print("<ul>\n");
-      foreach($directories as $directory) {
-          if ($directory != 'zmisc')
-            print("<li><a class=\"entry\" href=\"?path=".urlencode(realpath("$path/$directory"))."\">$directory</a></li>\n");
-      }
-
-      foreach($files as $file) {
-          if ($file != 'fetchstate.sh' && $file != 'mpvfifo')
-            print("<li><a class=\"entry\" href=\"?path=".urlencode(realpath("$path/$file"))."\">$file</a></li>\n");
-      }
-      print("</ul>\n");
-
-    ?>
-  </div>
-
+?>
 </body>
 </html>
 
