@@ -21,7 +21,7 @@ a.entry {
 	background: -webkit-linear-gradient(top, #ffffff 0%,#e5e5e5 100%);
 	background: -o-linear-gradient(top, #ffffff 0%,#e5e5e5 100%);
 	background: -ms-linear-gradient(top, #ffffff 0%,#e5e5e5 100%);
-	background: linear-gradient(to bottom, #050505 0%,#070707 100%);
+	background: linear-gradient(to bottom, #121212 0%,#151515 100%);
 	border-bottom: 1px #000000 solid;
 	padding: 1em;
 	text-align: center;
@@ -33,7 +33,7 @@ a.entry:hover {
 }
 
 #header, #viewmanagement {
-    background-color:#121212;
+    background-color:#000000;
     width:100%;
     text-align: center;
     position:fixed;
@@ -43,7 +43,7 @@ a.entry:hover {
 #header { margin-top:40px; }
 
 #content {
-    margin-top:210px;
+    margin-top:150px;
     width:100%;
     position: absolute;
     z-index:1;

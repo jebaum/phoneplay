@@ -40,10 +40,15 @@
   print("<a href='?cmd=tvon&path=".$linkpath."' class='button'>on</a>\n");
   print("<a href='?cmd=tvoff&path=".$linkpath."' class='button'>off</a>\n");
   print("<a href='?cmd=move&path=".$linkpath."' class='button'>move</a>\n");
-  print("<a href='?cmd=reset&path=".$linkpath."' class='button'>reset</a><br />\n");
+  print("<a href='?cmd=reset&path=".$linkpath."' class='button'>reset</a>\n");
+  print("<br />\n");
+
   print("<a href='?' class='button'>home</a>\n");
   print("<a href='?cmd=stop&path=".$linkpath."' class='button'>stop</a>\n");
-  print("<a href='?cmd=pause&path=".$linkpath."' class='button'>play/pause</a><br />\n");
+  print("<a href='?cmd=pause&path=".$linkpath."' class='button'>play/pause</a>\n");
+  print("<a href='?cmd=volumeup&path=".$linkpath."' class='button'>vol up</a>\n");
+  print("<a href='?cmd=volumedown&path=".$linkpath."' class='button'>vol down</a>\n");
+  print("<br />\n");
 
   print("<a href='?cmd=smallforward&path=".$linkpath."' class='button'>+10</a>\n");
   print("<a href='?cmd=smallback&path=".$linkpath."' class='button'>-10</a>\n");
@@ -53,8 +58,6 @@
   print("<a href='?cmd=bigback&path=".$linkpath."' class='button'>-600</a><br />\n");
 
 ?>
-    Volume: <a href="?cmd=volumeup" class="button">up</a>
-            <a href="?cmd=volumedown" class="button">down</a><br />
 
 <!--<a class="button" style="padding: 3px 5px 3px 5px;"><img src="play_small.png" /></a><br />-->
   </div>
