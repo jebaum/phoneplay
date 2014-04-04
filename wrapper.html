@@ -3,6 +3,31 @@
     <title>play something</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link href="style.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript">
+var buffer = 20; //scroll bar buffer
+var iframe = document.getElementById('ifm');
+
+function pageY(elem) {
+    return elem.offsetParent ? (elem.offsetTop + pageY(elem.offsetParent)) : elem.offsetTop;
+}
+
+function resizeIframe() {
+    var height = document.documentElement.clientHeight;
+    height -= pageY(document.getElementById('ifm'))+ buffer ;
+    height = (height < 0) ? 0 : height;
+    document.getElementById('ifm').style.height = height + 'px';
+}
+
+// .onload doesn't work with IE8 and older.
+if (iframe.attachEvent) {
+    iframe.attachEvent("onload", resizeIframe);
+} else {
+    iframe.onload=resizeIframe;
+}
+
+window.onresize = resizeIframe;
+    </script>
   </head>
 
   <iframe src="hideshow.php" name="hideshow" id="hideshowframe" scrolling="no" height="40px" width="100%" frameborder=0>
@@ -11,7 +36,9 @@
   <iframe src="controls.php" name="controls" id="controlsframe" scrolling="no" height="150px" width="100%" frameborder=0>
   </iframe>
 
-  <iframe src="browse.php" name="browse" id="browseframe" height="65%" width="100%" frameborder=0>
+  <div style="position:absolute; top: 190px; width:100%;">
+  <iframe src="browse.php" name="browse" id="browseframe" height="85%" width="100%" frameborder=0>
   </iframe>
+  </div>
 
 </html>

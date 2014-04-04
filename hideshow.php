@@ -7,7 +7,7 @@
         function hideControls()
         {
             parent.document.getElementById("controlsframe").style.display='none';
-            parent.document.getElementById("browseframe").height='90%';
+            parent.document.getElementById("browseframe").height='88%';
         }
         function showControls()
         {
